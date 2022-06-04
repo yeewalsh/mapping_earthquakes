@@ -1,19 +1,61 @@
-// add console log to check code working
-console.log("working");
 
-// Create the map object with a center and zoom level.
-let map = L.map('mapid').setView([37.5, -122.5], 10);
 
 // Create the tilelayer that will be the background of the map
 let streets = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    // maxZoom: 4,
+    maxZoom: 18,
     id: 'outdoors-v11',
     accessToken: API_KEY
 });
 
-// Add the 'graymap' tile layer to the map.
-streets.addTo(map);
+let dark = L.tileLayer('https://api.mapbox.com/styles/v1/mapbox/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'dark-v10',
+    accessToken: API_KEY
+});
+
+// Create a base layer that holds both maps.
+let baseMaps = {
+    Street: streets,
+    Dark: dark
+};
+
+// Create a map object with center, zoom level and default layer.
+let map = L.map('mapid', {
+    center: [30, 30],
+    zoom: 2,
+    layers: [streets]
+});
+
+// pass the map layers into the control layer and pass the control layer onto the map
+L.control.layers(baseMaps).addTo(map);
+
+
+// Accessing the airport GeoJSON URL
+let airportData = "https://raw.githubusercontent.com/yeewalsh/mapping_earthquakes/main/majorAirports.json";
+
+// Grabbing our GeoJSON data
+d3.json(airportData).then(function(data) {
+    console.log(data);
+    // creating a GeoJSON layer with the retrieved data
+    L.geoJson(data, {
+    onEachFeature: function(feature, layer) {
+                console.log(layer),
+                layer.bindPopup("<h2> Airport Code: " + feature.properties.faa + "</h2> <hr> <h3> Airport Name: " + feature.properties.name + ", " + feature.properties.country + "</h3>")
+    }}).addTo(map);
+});
+
+
+
+// Older code from "Mapping_Multiple_Points"
+
+// add console log to check code working
+// console.log("working");
+
+// // Create the map object with a center and zoom level.
+// let map = L.map('mapid').setView([30, 30], 2);
+
 
 // // add a circle to the map
 // let circleMarker = L.circleMarker([34.0522, -118.2437], {
@@ -24,21 +66,21 @@ streets.addTo(map);
 // }).addTo(map);
 
 
-// get data from cities.js
-let cityData = cities;
-console.log(cityData);
+// // get data from cities.js
+// let cityData = cities;
+// console.log(cityData);
 
-// loop through cities array and create one marker for each city
-cityData.forEach(function(city) {
-    console.log(city)
-    L.circleMarker(city.location, {
-        radius: city.population/100000,
-        color: "orange",
-        lineweight: 4
-    })
-    .bindPopup("<h2>" + city.city + ", " + city.state + "</h2> <hr> <h3>Population " + city.population.toLocaleString() + "</h3>")
-    .addTo(map);
-});
+// // loop through cities array and create one marker for each city
+// cityData.forEach(function(city) {
+//     console.log(city)
+//     L.circleMarker(city.location, {
+//         radius: city.population/100000,
+//         color: "orange",
+//         lineweight: 4
+//     })
+//     .bindPopup("<h2>" + city.city + ", " + city.state + "</h2> <hr> <h3>Population " + city.population.toLocaleString() + "</h3>")
+//     .addTo(map);
+// });
 
 
 // Coordinates for each point to be used in the line
@@ -49,39 +91,39 @@ cityData.forEach(function(city) {
 //     [47.4502, -122.3088]
 // ];
 
-let line = [
-        [37.6371, -122.3885],
-        [30.2022, -97.6666],
-        [43.6863, -79.6218],
-        [40.6413, -73.7781]
-    ];
+// let line = [
+//         [37.6371, -122.3885],
+//         [30.2022, -97.6666],
+//         [43.6863, -79.6218],
+//         [40.6413, -73.7781]
+//     ];
 
-// Crate a polyline using the line coordinates and make it red
-L.polyline(line, {
-    color: "blue",
-    dashArray: '5,5',
-    dashOffset: '5'
-}).addTo(map);
+// // Crate a polyline using the line coordinates and make it red
+// L.polyline(line, {
+//     color: "blue",
+//     dashArray: '5,5',
+//     dashOffset: '5'
+// }).addTo(map);
 
-// Add GeoJSON data.
-let sanFranAirport =
-{"type":"FeatureCollection","features":[{
-    "type":"Feature",
-    "properties":{
-        "id":"3469",
-        "name":"San Francisco International Airport",
-        "city":"San Francisco",
-        "country":"United States",
-        "faa":"SFO",
-        "icao":"KSFO",
-        "alt":"13",
-        "tz-offset":"-8",
-        "dst":"A",
-        "tz":"America/Los_Angeles"},
-        "geometry":{
-            "type":"Point",
-            "coordinates":[-122.375,37.61899948120117]}}
-]};
+// // Add GeoJSON data.
+// let sanFranAirport =
+// {"type":"FeatureCollection","features":[{
+//     "type":"Feature",
+//     "properties":{
+//         "id":"3469",
+//         "name":"San Francisco International Airport",
+//         "city":"San Francisco",
+//         "country":"United States",
+//         "faa":"SFO",
+//         "icao":"KSFO",
+//         "alt":"13",
+//         "tz-offset":"-8",
+//         "dst":"A",
+//         "tz":"America/Los_Angeles"},
+//         "geometry":{
+//             "type":"Point",
+//             "coordinates":[-122.375,37.61899948120117]}}
+// ]};
 
 // Grabbing GeoJSON data
 // L.geoJSON(sanFranAirport, {
@@ -93,13 +135,13 @@ let sanFranAirport =
 //     }
 // }).addTo(map);
 
-// Grabbing GeoJSON data
-L.geoJSON(sanFranAirport, {
-    // turn each feature into a marker on the map
-    onEachFeature: function(feature, layer) {
-        console.log(layer),
-        layer.bindPopup()
-        // return L.marker(latlng)
-        .bindPopup("<h2> Airport Code: " + feature.properties.faa + "</h2> <hr> <h3> Airport Name: " + feature.properties.name + ", " + feature.properties.country + "</h3>");
-    }
-}).addTo(map);
+// // Grabbing GeoJSON data
+// L.geoJson(sanFranAirport, {
+//     // turn each feature into a marker on the map
+//     onEachFeature: function(feature, layer) {
+//         console.log(layer),
+//         layer.bindPopup()
+//         // return L.marker(latlng)
+//         .bindPopup("<h2> Airport Code: " + feature.properties.faa + "</h2> <hr> <h3> Airport Name: " + feature.properties.name + ", " + feature.properties.country + "</h3>");
+//     }
+// }).addTo(map);
