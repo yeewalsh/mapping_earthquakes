@@ -22,6 +22,15 @@ let baseMaps = {
     "Streets": streets
 };
 
+// Create the earthquake layer for our map
+let earthquakes = new L.layerGroup();
+
+// Define an object for the overlays, this overlay will be visible all the time.
+let overlays = {
+    Earthquakes: earthquakes
+};
+
+
 // Create a map object with center, zoom level and default layer.
 let map = L.map('mapid', {
     center: [39.5, -98.5],
@@ -29,8 +38,9 @@ let map = L.map('mapid', {
     layers: [streets]
 });
 
+
 // pass the map layers into the control layer and pass the control layer onto the map
-L.control.layers(baseMaps).addTo(map);
+L.control.layers(baseMaps, overlays).addTo(map);
 
 
 // Accessing the airport GeoJSON URL
@@ -92,6 +102,38 @@ d3.json(earthquakesLastWeek).then(function(data) {
             layer.bindPopup("Magnitude " + feature.properties.mag + "<br>Location: " + feature.properties.place);
         }
     })
-    .addTo(map);
+    .addTo(earthquakes);
+
+    // Then add the earthquake layer to the map
+    earthquakes.addTo(map);
 });
 
+// Create a legend control object
+
+let legend = L.control({position: 'bottomright'});
+
+legend.onAdd = function () {
+
+    let div = L.DomUtil.create('div', 'info legend'),
+        magnitudes = [0, 1, 2, 3, 4, 5];
+        colors = [
+            "#98ee00",
+            "#d4ee00",
+            "#eecc00",
+            "#ee9c00",
+            "#ea822c",
+            "#ea2c2c"
+        ];
+
+    // loop through our density intervals and generate a label with a colored square for each interval
+    for (let i = 0; i < magnitudes.length; i++) {
+        console.log(colors[i]);
+        div.innerHTML +=
+            '<i style="background:' + colors[i] + '"></i> ' +
+            magnitudes[i] + (magnitudes[i + 1] ? '&ndash;' + magnitudes[i + 1] + '<br>' : '+');
+    }
+
+    return div;
+};
+
+legend.addTo(map);
