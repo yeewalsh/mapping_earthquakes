@@ -1,6 +1,6 @@
 # Mapping Earthquakes
 
-Using JavaScript, Leaflet, and Mapbox tools, this code visualizes earthquake activity from the last 7 days. The data, in .json format, was taken from the U.S. Geological Survey's (USGS) Earthquake Hazards Program. The techtonic plate data was taken from gitHub, and is based on _An updated digital moel of plate boundaries_ by Peter Bird (Geochemistry Geophysics Geosystems, 4(3), 1027, [doi:10.1029/2001GC000252](http://scholar.google.se/scholar?cluster=1268723667321132798), 2003).
+Using JavaScript, Leaflet, and Mapbox tools, this code visualizes earthquake activity from the last 7 days. The data, in .json format, was taken from the U.S. Geological Survey's (USGS) Earthquake Hazards Program. The techtonic plate data was taken from gitHub, and is based on _An updated digital model of plate boundaries_ by Peter Bird (Geochemistry Geophysics Geosystems, 4(3), 1027, [doi:10.1029/2001GC000252](http://scholar.google.se/scholar?cluster=1268723667321132798), 2003).
 
 ## Instructions for use
  
