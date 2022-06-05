@@ -46,17 +46,15 @@ d3.json(torontoHoods).then(function (data) {
     console.log(data);
     // creating a GeoJSON layer with the retrieved data
     L.geoJson(data, {
-        style : myStyle
+        fill: "yellow",
+        onEachFeature: function (feature, layer) {
+            console.log(layer),
+                layer.bindPopup("<h2>Neighborhood: " + feature.properties.AREA_NAME + "</h2>")
+        }
     }).addTo(map);
 });
 
-// , {
-//     style: myStyle,
-//     onEachFeature: function (feature, layer) {
-//         console.log(layer),
-//             layer.bindPopup("<h2>Airline: " + feature.properties.airline + "</h2> <hr> <h3> Destination: " + feature.properties.dst + "</h3>")
-//     }
-// }
+
 
 
 // Older code from "Mapping_Multiple_Points"
